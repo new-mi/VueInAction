@@ -9,46 +9,181 @@
 
     <link
       rel="stylesheet"
-      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
-      integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+      integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk"
       crossorigin="anonymous"
     />
+
     <link rel="stylesheet" href="main.css" />
   </head>
   <body>
     <div id="app">
       <header>
-        <h1 v-text="sitename"></h1>
+        <nav class="navbar">
+          <h1 v-text="sitename"></h1>
+          <button class="btn btn-info ml-auto cart" @click="showCheckout">
+            {{cartItemCount}} <i class="fas fa-shopping-cart"></i> Checkout
+          </button>
+        </nav>
       </header>
-      <main>
-        <div class="row product">
-          <div class="col">
-            <figure>
-              <img v-bind:src="product.image" alt="" />
-            </figure>
+      <main class="mt-5">
+        <div class="product">
+          <div v-if="showProduct">
+            <div class="row">
+              <div class="col">
+                <figure>
+                  <img v-bind:src="product.image" alt="" />
+                </figure>
+              </div>
+              <div class="col col-expand">
+                <h1 v-text="product.title">{{ product.title }}</h1>
+                <p v-html="product.description"></p>
+                <p class="price">{{ product.price | formatPrice }}</p>
+                <button
+                  v-if="canAddToCart"
+                  class="btn btn-primary"
+                  @click="addToCart"
+                >
+                  Add to cart
+                </button>
+                <button v-else class="btn btn-primary disabled">
+                  Add to cart
+                </button>
+              </div>
+            </div>
           </div>
-          <div class="col col-expand">
-            <h1 v-text="product.title">{{ product.title }}</h1>
-            <p v-html="product.description"></p>
-            <p class="price">{{ product.price | formatPrice }}</p>
+          <div v-else>
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <strong>First Name:</strong>
+                <input
+                  class="form-control"
+                  type="text"
+                  v-model="order.firstName"
+                />
+              </div>
+              <div class="col-md-6 mb-3">
+                <strong>Last Name:</strong>
+                <input
+                  class="form-control"
+                  type="text"
+                  v-model="order.lastName"
+                />
+              </div>
+              <div class="col-md-12 mb-3">
+                <strong>Address:</strong>
+                <input
+                  class="form-control"
+                  type="text"
+                  v-model="order.address"
+                />
+              </div>
+              <div class="col-md-12 mb-3">
+                <strong>City:</strong>
+                <input class="form-control" type="text" v-model="order.city" />
+              </div>
+              <div class="col-md-2 mb-3">
+                <strong>State:</strong>
+                <select v-model="order.state" class="form-control">
+                  <option disabled value="">State</option>
+                  <option value="AL">AL</option>
+                  <option value="AR">AR</option>
+                  <option value="CA">CA</option>
+                  <option value="NV">NV</option>
+                </select>
+              </div>
+              <div class="col-md-6 offset-md-4 mb-3">
+                <strong>Zip / Postal code:</strong>
+                <input class="form-control" type="text" v-model="order.zip" />
+              </div>
+              <div class="col-md-6 boxes mb-3">
+                <input
+                  type="checkbox"
+                  id="gift"
+                  value="true"
+                  v-model="order.gift"
+                />
+                <label for="gift">Shift As Gidt</label>
+              </div>
+              <div class="col-md-6 boxes mb-3">
+                <input
+                  type="radio"
+                  id="home"
+                  value="Home"
+                  v-model="order.method"
+                />
+                <label for="home">Home</label>
+                <input
+                  type="radio"
+                  id="business"
+                  value="Business"
+                  v-model="order.method"
+                />
+                <label for="business">Business</label>
+              </div>
+              <div class="col-md-6">
+                <button
+                  type="submit"
+                  class="btn btn-primary submit"
+                  @click.prevent="submitForm"
+                >
+                  Place Order
+                </button>
+              </div>
+              <div class="col-md-12 verify mb-3">
+                First Name: {{order.firstName}} <br />
+                Last Name: {{order.lastName}} <br />
+                Address: {{order.address}} <br />
+                City: {{order.city}} <br />
+                Zip: {{order.zip}} <br />
+                State: {{order.state}} <br />
+                Gift: {{order.gift}} <br />
+                Method: {{order.method}} <br />
+              </div>
+            </div>
           </div>
         </div>
       </main>
     </div>
 
     <script>
-      var APP_LOG_LIFECYCLE_EVENTS = true;
+      var APP_LOG_LIFECYCLE_EVENTS = false;
 
       var webstore = new Vue({
         el: "#app",
         data: {
           sitename: "Vue.js Pet Depot",
+          cart: [],
+          showProduct: true,
+          order: {
+            firstName: "",
+            lastName: "",
+            address: "",
+            city: "",
+            zip: "",
+            state: "",
+            gift: false,
+            method: "Home",
+          },
           product: {
             id: 1001,
             title: "Cat Food, 25lb bag",
             description: `A 25 pound bag of <em>irresistible</em>, organic goodness for your cat.`,
             price: 2000,
             image: "image/product-fullsize.png",
+            availableInventory: 5,
+          },
+        },
+        computed: {
+          cartItemCount: function () {
+            return this.cart.length || 0;
+          },
+          canAddToCart: function () {
+            return this.product.availableInventory > this.cartItemCount;
           },
         },
         filters: {
@@ -66,6 +201,17 @@
             } else {
               return "$" + (price / 100).toFixed(2);
             }
+          },
+        },
+        methods: {
+          addToCart: function () {
+            this.cart.push(this.product.id);
+          },
+          showCheckout: function () {
+            this.showProduct = !this.showProduct;
+          },
+          submitForm() {
+            alert("submitted!");
           },
         },
         beforeCreate: function () {
