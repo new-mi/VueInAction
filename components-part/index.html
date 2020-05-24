@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Components Part</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  </head>
+  <body>
+    <div id="app">
+      <my-component text="World"></my-component>
+      <component-test :text="message"></component-test>
+      <inline-component :text-msg="message" inline-template>
+        <div>
+          <p>
+            Inline-component --- {{textMsg}}
+          </p>
+        </div>
+      </inline-component>
+      <x-component></x-component>
+    </div>
+
+    <script type="text/x-template" id="x-component">
+      <p>
+          Hello x-template component
+      </p>
+    </script>
+
+    <script>
+      Vue.component("my-component", {
+        template: `<div>Hello From Component {{ text }}</div>`,
+        props: ["text"],
+      });
+
+      const ComponentTest = {
+        template: `<div>Hello From ComponentTest {{ text }} {{ localMsg }}</div>`,
+        props: ["text"],
+        data() {
+          return {
+            localMsg: "Local Message",
+          };
+        },
+      };
+
+      const InlineComponent = {
+        props: ["textMsg"],
+      };
+
+      const xComponent = {
+        template: "#x-component",
+      };
+
+      new Vue({
+        el: "#app",
+        components: {
+          "component-test": ComponentTest,
+          InlineComponent,
+          xComponent,
+        },
+        data() {
+          return {
+            message: "Parent Text",
+          };
+        },
+      });
+    </script>
+  </body>
+</html>
