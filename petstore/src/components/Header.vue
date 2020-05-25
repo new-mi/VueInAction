@@ -4,10 +4,15 @@
       <h1>
         <router-link :to="{name: 'Main'}">{{sitename}}</router-link>
       </h1>
-      <button class="btn btn-info ml-auto cart" @click="showCheckout">
+      <router-link
+        class="btn btn-info ml-auto cart"
+        active-class="active"
+        tag="button"
+        :to="computedLink"
+      >
         {{cartItemCount}}
         <i class="fas fa-shopping-cart"></i> Checkout
-      </button>
+      </router-link>
     </nav>
   </header>
 </template>
@@ -20,12 +25,13 @@ export default {
       sitename: "VueJS Pet Depot"
     };
   },
-  props: ["cartItemCount"],
-  methods: {
-    showCheckout() {
-      this.$router.push({ name: "Form" });
+  computed: {
+    computedLink() {
+      if (this.$route.name === "Main") return { name: "Form" };
+      else return { name: "Main" };
     }
-  }
+  },
+  props: ["cartItemCount"]
 };
 </script>
 

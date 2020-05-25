@@ -35,9 +35,8 @@ export default {
     }
   },
   created() {
-    axios.get("./products.json").then(response => {
+    axios.get("/products.json").then(response => {
       this.products = response.data.products;
-      console.log(this.products);
     });
   }
 };

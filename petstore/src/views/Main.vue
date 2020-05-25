@@ -8,7 +8,11 @@
           </figure>
         </div>
         <div class="col-md-6 offset-md-1 description">
-          <h1 v-text="product.title">{{ product.title }}</h1>
+          <router-link
+            style="cursor:pointer"
+            tag="h1"
+            :to="{name: 'Id', params:{id:product.id}}"
+          >{{ product.title }}</router-link>
           <p v-html="product.description"></p>
           <p class="price">{{ product.price | formatPrice }}</p>
           <button
@@ -40,6 +44,8 @@
 </template>
 
 <script>
+import { formatPrice } from "@/filters";
+
 export default {
   name: "Main",
   props: ["props"],
@@ -59,21 +65,7 @@ export default {
     }
   },
   filters: {
-    formatPrice: function(price) {
-      if (!parseInt(price)) return "";
-      if (price > 99999) {
-        var priceString = (price / 100).toFixed(2);
-        var priceArray = priceString.split("").reverse();
-        var index = 3;
-        while (priceArray.length > index + 3) {
-          priceArray.splice(index + 3, 0, ",");
-          index += 4;
-        }
-        return "$" + priceArray.reverse().join("");
-      } else {
-        return "$" + (price / 100).toFixed(2);
-      }
-    }
+    formatPrice
   },
   methods: {
     addToCart: function(myProduct) {
