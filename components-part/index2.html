@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Slots</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  </head>
+  <body>
+    <div id="app">
+      <h1>Async components</h1>
+      <async-component></async-component>
+
+      <!-- <div>
+        <h1>Dynamic components</h1>
+        <button @click="cycle">Cycle</button>
+        <component :is="currentView"></component>
+      </div> -->
+
+      <!-- <header-component :text="header"></header-component>
+      <form-component>
+        <label for="title" slot="titleSlot">{{titleLabel}}</label>
+        <label for="author" slot="authorSlot">{{authorLabel}}</label>
+        <h1>{{header}}</h1>
+      </form-component>
+
+      <book-component :books="books">
+        <h1 slot="header">{{header}}</h1>
+        <template slot="book" slot-scope="props">
+          <h2>
+            <i>{{props.text.title}}</i>
+            <small>by: {{props.text.author}}</small>
+          </h2>
+        </template>
+      </book-component> -->
+    </div>
+
+    <script>
+      const FormComponent = {
+        template: `
+          <div>
+            <form>
+              <slot></slot>
+              <slot name="titleSlot"></slot>
+              <input id="title" type="text"/><br/>
+              <slot name="authorSlot"></slot>
+              <input id="author" type="text"/><br/>
+              <button>Submit</button>
+            </form>
+          </div>
+        `,
+      };
+      const BookComponent = {
+        template: `
+          <div>
+            <slot name="header"></slot>
+            <slot name="book" v-for="book in books" :text="book"></slot>
+          </div>
+        `,
+        props: ["books"],
+      };
+
+      const HeaderComponent = {
+        template: `<h1>{{text}}</h1>`,
+        props: ["text"],
+      };
+
+      const Comp1 = {
+        template: `<h1>Component 1</h1>`,
+      };
+      const Comp2 = {
+        template: `<h1>Component 2</h1>`,
+      };
+      const Comp3 = {
+        template: `<h1>Component 3</h1>`,
+      };
+
+      const AsyncComponent = function (resolve, reject) {
+        setTimeout(function () {
+          resolve({
+            template: `<h2 style="color:red">This is async component</h2>`,
+          });
+        }, 2000);
+      };
+
+      new Vue({
+        el: "#app",
+        components: {
+          FormComponent,
+          BookComponent,
+          HeaderComponent,
+          Comp1,
+          Comp2,
+          Comp3,
+          AsyncComponent,
+        },
+        data() {
+          return {
+            currentView: Comp1,
+            titleLabel: "The Title",
+            authorLabel: "The Author",
+            header: "Book Author Form",
+            books: [
+              { author: "John Smith", title: "Best Of Times" },
+              { author: "John Smith 1", title: "Best Of Times 1" },
+              { author: "John Smith 2", title: "Best Of Times 2" },
+            ],
+          };
+        },
+        methods: {
+          cycle() {
+            if (this.currentView === Comp1) this.currentView = Comp2;
+            else if (this.currentView === Comp2) this.currentView = Comp3;
+            else this.currentView = Comp1;
+          },
+        },
+      });
+    </script>
+  </body>
+</html>
