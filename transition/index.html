@@ -8,22 +8,23 @@
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 
     <style>
-      .fade-enter-active,
+      /* transiiton */
+      /* .fade-enter-active,
       .fade-leave-active {
         transition: opacity 2.5s ease-out;
       }
-
       .fade-enter,
       .fade-leave-to {
         opacity: 0;
-      }
+      } */
 
-      .bounce-enter-active {
+      /* animation */
+      /* .bounce-enter-active {
         animation: bounceIn 2s;
       }
       .bounce-leave-active {
         animation: bounceIn 2s reverse;
-      }
+      } */
 
       @keyframes bounceIn {
         0% {
@@ -42,6 +43,7 @@
   </head>
   <body>
     <div id="app">
+      <!-- transition -->
       <!-- <div @click="show = !show">
         <h2>{{title}}</h2>
       </div>
@@ -50,10 +52,34 @@
           <h3>{{description}}</h3>
         </div>
       </transition> -->
+
+      <!-- animation -->
+      <!-- <div @click="show = !show">
+          <h2>{{title}}</h2>
+        </div>
+        <transition name="bounce">
+          <div v-if="show">
+            <h3>{{description}}</h3>
+          </div>
+        </transition>
+      </div> -->
+
+      <!-- hooks -->
       <div @click="show = !show">
         <h2>{{title}}</h2>
       </div>
-      <transition name="bounce">
+      <transition
+        name="fade"
+        @before-enter="beforeEnter"
+        @enter="enter"
+        @after-enter="afterEnter"
+        @before-leave="beforeLeave"
+        @leave="leave"
+        @after-leave="afterLeave"
+        @enter-cancelled="enterCancelled"
+        @leave-cancelled="leaveCancelled"
+        :css="false"
+      >
         <div v-if="show">
           <h3>{{description}}</h3>
         </div>
@@ -61,6 +87,13 @@
     </div>
 
     <script>
+      function addEventListenerAnimation(el, done) {
+        el.addEventListener("animationend", function () {
+          el.style = "";
+          done();
+        });
+      }
+
       new Vue({
         el: "#app",
         data() {
@@ -70,6 +103,39 @@
             description:
               "loremlorem lorem lorem lorem   lorem   lorem loremloremloremlorem",
           };
+        },
+        methods: {
+          beforeEnter(el) {
+            console.log("beforeEnter");
+          },
+          enter(el, done) {
+            console.log("enter");
+            addEventListenerAnimation(el, done);
+            el.style.animationName = "bounceIn";
+            el.style.animationDuration = "1.5s";
+          },
+          afterEnter(el) {
+            console.log("afterEnter");
+          },
+          beforeLeave(el) {
+            console.log("beforeLeave");
+          },
+          leave(el, done) {
+            console.log("leave");
+            addEventListenerAnimation(el, done);
+            el.style.animationName = "bounceIn";
+            el.style.animationDuration = "1.5s";
+            el.style.animationDirection = "reverse";
+          },
+          afterLeave(el) {
+            console.log("afterLeave");
+          },
+          enterCancelled(el) {
+            console.log("enterCancelled");
+          },
+          leaveCancelled(el) {
+            console.log("leaveCancelled");
+          },
         },
       });
     </script>

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Slots</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+    <style>
+      .component-fade-enter-active,
+      .component-fade-leave-active {
+        transition: opacity 2s ease;
+      }
+      .component-fade-enter,
+      .component-fade-leave {
+        opacity: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <h1>Dynamic components fade effect</h1>
+      <button @click="cycle">Cycle</button>
+      <transition name="component-fade" mode="out-in">
+        <component :is="currentView"></component>
+      </transition>
+    </div>
+
+    <script>
+      const Comp1 = {
+        template: `<h1>Component 1</h1>`,
+      };
+      const Comp2 = {
+        template: `<h1>Component 2</h1>`,
+      };
+      const Comp3 = {
+        template: `<h1>Component 3</h1>`,
+      };
+
+      new Vue({
+        el: "#app",
+        components: {
+          Comp1,
+          Comp2,
+          Comp3,
+        },
+        data() {
+          return {
+            currentView: Comp1,
+          };
+        },
+        methods: {
+          cycle() {
+            if (this.currentView === Comp1) this.currentView = Comp2;
+            else if (this.currentView === Comp2) this.currentView = Comp3;
+            else this.currentView = Comp1;
+          },
+        },
+      });
+    </script>
+  </body>
+</html>

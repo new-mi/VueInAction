@@ -2,7 +2,9 @@
   <div id="app">
     <Header :cartItemCount="cartItemCount" />
     <main class="mt-5 container">
-      <router-view @addToCart="addToCart" :props="{ products, cart }"></router-view>
+      <transition name="fade" mode="out-in">
+        <router-view @addToCart="addToCart" :props="{ products, cart }"></router-view>
+      </transition>
     </main>
   </div>
 </template>
@@ -41,3 +43,14 @@ export default {
   }
 };
 </script>
+
+<style>
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 1s ease;
+}
+.fade-enter,
+.fade-leave {
+  opacity: 0;
+}
+</style>
