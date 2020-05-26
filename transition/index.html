@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Transition</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+    <style>
+      .fade-enter-active,
+      .fade-leave-active {
+        transition: opacity 2.5s ease-out;
+      }
+
+      .fade-enter,
+      .fade-leave-to {
+        opacity: 0;
+      }
+
+      .bounce-enter-active {
+        animation: bounceIn 2s;
+      }
+      .bounce-leave-active {
+        animation: bounceIn 2s reverse;
+      }
+
+      @keyframes bounceIn {
+        0% {
+          transform: scale(0.1);
+          opacity: 0;
+        }
+        60% {
+          transform: scale(1.2);
+          opacity: 1;
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <!-- <div @click="show = !show">
+        <h2>{{title}}</h2>
+      </div>
+      <transition name="fade">
+        <div v-if="show">
+          <h3>{{description}}</h3>
+        </div>
+      </transition> -->
+      <div @click="show = !show">
+        <h2>{{title}}</h2>
+      </div>
+      <transition name="bounce">
+        <div v-if="show">
+          <h3>{{description}}</h3>
+        </div>
+      </transition>
+    </div>
+
+    <script>
+      new Vue({
+        el: "#app",
+        data() {
+          return {
+            show: false,
+            title: "War and Peace",
+            description:
+              "loremlorem lorem lorem lorem   lorem   lorem loremloremloremlorem",
+          };
+        },
+      });
+    </script>
+  </body>
+</html>
