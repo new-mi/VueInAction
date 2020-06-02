@@ -27,7 +27,7 @@ export default {
   },
   computed: {
     computedLink() {
-      if (this.$route.name === "Main") return { name: "Form" };
+      if (this.$route.name !== "Form") return { name: "Form" };
       else return { name: "Main" };
     }
   },

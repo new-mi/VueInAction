@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>mixins Vue</title>
+
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+      integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk"
+      crossorigin="anonymous"
+    />
+
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+    <style></style>
+  </head>
+  <body>
+    <div id="app">
+      <div class="container">
+        <h1 class="text-center mb-5">{{title}}</h1>
+        <div class="row">
+          <div class="col-md-3 offset-md-2">
+            <my-comp1 class="comp1"></my-comp1>
+          </div>
+          <div class="col-md-3">
+            <h2 class="text-center">Or</h2>
+          </div>
+          <div class="col-md-3">
+            <my-comp2 class="comp2"></my-comp2>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      //global mixin
+      Vue.mixin({
+        data() {
+          return {
+            temp: " + global mixin",
+          };
+        },
+      });
+
+      //local mixin
+      const myButton = {
+        methods: {
+          pressed(val) {
+            alert(val + this.temp);
+          },
+        },
+        data() {
+          return {
+            item: "",
+          };
+        },
+      };
+
+      const comp1 = {
+        template: `
+            <div>
+                <h2>Enter email</h2>
+                <form>
+                    <div class="form-group">
+                        <input
+                            v-model="item"
+                            type='email'
+                            class="form-control"
+                            placeholder="Email Address"
+                        />    
+                    </div>
+                    <div class="form-group">
+                        <button
+                            class="btn btn-primary btn-lg"
+                            @click.prevent="pressed(item)"
+                        >Press Button 1</button>
+                    </div>
+                </form>    
+            </div>
+        `,
+        mixins: [myButton],
+      };
+
+      const comp2 = {
+        template: `
+            <div>
+                <h2>Enter Number</h2>
+                <form>
+                    <div class="form-group">
+                        <input
+                            v-model="item"
+                            type='email'
+                            class="form-control"
+                            placeholder="Phone Number"
+                        />    
+                    </div>
+                    <div class="form-group">
+                        <button
+                            class="btn btn-warning btn-lg"
+                            @click.prevent="pressed(item)"
+                        >Press Button 2</button>
+                    </div>
+                </form>
+            </div>
+        `,
+        mixins: [myButton],
+      };
+
+      new Vue({
+        el: "#app",
+        data() {
+          return {
+            title: "Mixin in example using two components",
+          };
+        },
+        components: {
+          myComp1: comp1,
+          myComp2: comp2,
+        },
+      });
+    </script>
+  </body>
+</html>

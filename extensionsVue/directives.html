@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>mixins Vue</title>
+
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+      integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk"
+      crossorigin="anonymous"
+    />
+
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+    <style></style>
+  </head>
+  <body>
+    <div id="app">
+      <p v-style-me>{{welcome}}</p>
+      <p v-style-me-global:text-center.large="'red'">{{welcome}}</p>
+      <p v-style-me-global.small>{{welcome}}</p>
+    </div>
+
+    <script>
+      //global directive
+      Vue.directive("style-me-global", {
+        bind(el, binding) {
+          console.log(el, binding);
+          //binding.value
+          el.style.color = binding.value || "green";
+
+          //binding.modifiers
+          if (binding.modifiers.large) {
+            el.style.fontSize = "42px";
+          }
+          if (binding.modifiers.small) {
+            el.style.fontSize = "17px";
+          }
+
+          //binding.arg
+          if (binding.arg) el.className = binding.arg;
+        },
+      });
+
+      new Vue({
+        el: "#app",
+        data() {
+          return {
+            welcome: "Hello Directive",
+          };
+        },
+        //local directive
+        directives: {
+          styleMe(el, binding, vnode, oldVnode) {
+            console.log(el, binding, vnode, oldVnode);
+            //хуки директивы
+            //bind, inserted, update, componentUpdate, unbind
+            bind: {
+              el.style.color = "blue";
+              el.style.fontSize = "42px";
+              el.className = "text-center";
+            }
+          },
+        },
+      });
+    </script>
+  </body>
+</html>

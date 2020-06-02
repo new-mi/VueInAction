@@ -10,20 +10,19 @@
 </template>
 
 <script>
-import axios from "axios";
-
 import Header from "@/components/Header";
 import Form from "@/views/Form";
+import { mapGetters } from "vuex";
 
 export default {
   name: "App",
   data() {
     return {
-      products: [],
       cart: []
     };
   },
   computed: {
+    ...mapGetters(["products"]),
     cartItemCount: function() {
       return this.cart.length || 0;
     }
@@ -37,9 +36,7 @@ export default {
     }
   },
   created() {
-    axios.get("/products.json").then(response => {
-      this.products = response.data.products;
-    });
+    this.$store.dispatch("initStore");
   }
 };
 </script>
